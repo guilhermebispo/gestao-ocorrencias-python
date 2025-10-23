@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Usuario } from '../models/usuario';
+import { Usuario, UsuarioCreatePayload } from '../models/usuario';
 import { environment } from '../../environments/environment';
 import { RespostaPaginada } from '../models/resposta-paginada';
 import { UsuarioParametro } from '../models/usuario';
@@ -41,7 +41,7 @@ export class UsuarioService {
     return this.http.get<Usuario>(`${API}/email/${email}`);
   }
 
-  criar(usuario: Usuario): Observable<Usuario> {
+  criar(usuario: UsuarioCreatePayload): Observable<Usuario> {
     return this.http.post<Usuario>(API, usuario);
   }
 

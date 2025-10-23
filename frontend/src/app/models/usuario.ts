@@ -9,6 +9,13 @@ export interface Usuario {
   dataCriacao: string;
 }
 
+export interface UsuarioCreatePayload {
+  nome: string;
+  email: string;
+  senha: string;
+  perfil: string;
+}
+
 export interface UsuarioParametro {
   page: number,
   size: number,

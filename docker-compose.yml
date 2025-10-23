@@ -28,23 +28,15 @@ services:
       retries: 20
 
   migrate:
-    image: maven:3.9-eclipse-temurin-21
-    working_dir: /app
-    volumes:
-      - ./backend:/app
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    command: ["python", "scripts/run_migrations.py"]
+    environment:
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-incidents_user}:${POSTGRES_PASSWORD:-incidents_pass}@db:5432/${POSTGRES_DB:-incidents_db}
     depends_on:
       db:
         condition: service_healthy
-    entrypoint:
-      [
-        "sh","-lc",
-        "set -e; \
-         mvn -q -DskipTests \
-            -Dflyway.url=jdbc:postgresql://db:5432/${POSTGRES_DB:-incidents_db} \
-            -Dflyway.user=${POSTGRES_USER:-incidents_user} \
-            -Dflyway.password=${POSTGRES_PASSWORD:-incidents_pass} \
-            flyway:repair flyway:migrate"
-      ]
     networks:
       - incidents_net
 
@@ -55,8 +47,9 @@ services:
     container_name: incidents_api
     restart: unless-stopped
     environment:
-      SPRING_PROFILES_ACTIVE: docker
-      SERVER_PORT: 8080
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-incidents_user}:${POSTGRES_PASSWORD:-incidents_pass}@db:5432/${POSTGRES_DB:-incidents_db}
+      JWT_SECRET: \${JWT_SECRET:-L9k9M9W9bQXdd6cojXruU2pZTd7rsiAjpCB}
+      PORT: 8080
     depends_on:
       db:
         condition: service_healthy

@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { MatSort, Sort } from '@angular/material/sort';
-import { Usuario } from '../../models/usuario';
+import { Usuario, UsuarioCreatePayload } from '../../models/usuario';
 import { UsuarioService } from '../../services/usuario.service';
 import { UsuarioFormComponent } from './usuario-form/usuario-form.component';
 import { ToastrService } from 'ngx-toastr';
@@ -122,7 +122,14 @@ export class UsuarioComponent implements OnInit {
       }
     }).subscribe((result: any) => {
       if (result) {
-        this.usuarioService.criar({ ...result, senha: 123456 }).subscribe({
+        const payload: UsuarioCreatePayload = {
+          nome: result.nome,
+          email: result.email,
+          perfil: result.perfil,
+          senha: '123456'
+        };
+
+        this.usuarioService.criar(payload).subscribe({
           next: () => {
             this.toastrService.success('Usuário cadastrado com sucesso!');
             this.carregarUsuarios();
